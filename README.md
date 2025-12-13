@@ -1,66 +1,80 @@
-# TMDB Movie Analytics
+# TMDB Movie Data Pipeline
 
-**Overview**
-This project collects movie data from the TMDB API, prepares it for analysis, and explores performance patterns across budget, revenue, ratings, franchises, and popularity. The workflow follows a standard data pipeline that includes extraction, cleaning, transformation, KPI development, and visualization.
+## Overview
+This project processes TMDB movie data using a modular Python pipeline. It demonstrates a complete ETL (Extraction, Transformation, Load/Analysis) workflow, calculating key performance indicators (KPIs) and generating visualizations for movie revenue, ROI, and franchise performance.
 
-# Data Extraction
-Movie information is retrieved directly from the TMDB API for a chosen list of movie IDs. Each API response includes details such as:
+## Features
+- **Modular Architecture**: Code is organized into `extraction`, `transformation`, `analysis`, and `visualization` packages.
+- **Robust API Fetching**: Handles retries and error checking when fetching data from TMDB.
+- **In-Memory Processing**: Data is processed purely as Pandas DataFrames in memory.
+- **Rich Outputs**:
+    - **Data**: Saved as **HTML Tables** for easy inspection (`outputs/data/`).
+    - **Plots**: Saved as high-quality PNG images (`outputs/plots/`).
+- **Live Notebook**: A Jupyter Notebook (`final_report.ipynb`) that runs the pipeline live and displays interactive tables and plots.
 
-Titles, summaries, and release dates
+## Project Structure
+```
+.
+├── extraction/         # API Request Logic
+│   └── api.py
+├── transformation/     # Data Cleaning & Parsing
+│   └── cleaning.py
+├── analysis/           # KPIs, Rankings, & Comparisons
+│   └── analysis.py
+├── visualization/      # Plotting Functions
+│   └── plots.py
+├── pipeline/           # Orchestration
+│   └── runner.py
+├── config/             # Settings & Keys
+│   └── settings.py
+├── notebooks/          # Presentation Layer
+│   └── final_report.ipynb
+├── outputs/            # Generated Results
+│   ├── data/
+│   └── plots/
+├── .env                # API Keys (GitIgnored)
+└── requirements.txt    # Dependencies
+```
 
-Cast, crew, and directors
+## Setup & Installation
 
-Genres, production companies, and countries
+1.  **Clone the Repository**:
+    ```bash
+    git clone https://github.com/Xenongt1/TMDB-FETCH.git
+    cd TMDB-FETCH
+    ```
 
-Budgets, revenues, popularity, and ratings
+2.  **Install Dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-All responses are stored and compiled into a Pandas DataFrame.
+3.  **Configure API Key**:
+    - Create a `.env` file in the root directory (copy `.env.example`).
+    - Add your TMDB API Key:
+      ```
+      TMDB_API_KEY=your_api_key_here
+      ```
 
-# Data Cleaning and Transformation
-The raw API output contains nested dictionaries, inconsistent formats, and missing values.
-Key cleaning steps include:
+## Usage
 
-Flattening list-based fields (genres, companies, countries, languages)
+### Option 1: Run the Pipeline (Command Line)
+To execute the full ETL process, generate HTML tables, and save plots:
+```bash
+python3 -m pipeline.runner
+```
+*Results will be saved to `outputs/`.*
 
-Converting budgets and revenues into numeric form and scaling them into millions
+### Option 2: Run the Notebook (Interactive)
+To view the analysis dynamically with styled tables and inline plots:
+1. Open `notebooks/final_report.ipynb` in Jupyter Lab or VS Code.
+2. Run all cells.
 
-Creating new metrics such as profit and ROI
-
-Handling invalid dates, zero budgets, and missing entries
-
-Filtering out incomplete or irrelevant movie records
-
-Reordering columns for clarity
-
-This results in a structured dataset suitable for analysis.
-
-# KPI Analysis
-Several performance metrics are calculated to compare movies and identify trends. These include:
-
-Highest revenue, budget, profit, and ROI
-
-Lowest ROI and biggest financial losses
-
-Most popular and most voted movies
-
-Franchise-level statistics using belongs_to_collection
-
-Director-level revenue and rating summaries
-
-Custom search queries combining genres, cast, and directors
-
-A reusable ranking function is used to generate consistent KPI tables.
-
-# Visualizations
-Matplotlib is used to explore relationships and historical patterns through:
-
-Budget vs. revenue scatterplots
-
-ROI distribution histograms
-
-Popularity vs. rating scatterplots
-
-Yearly total revenue trends
-
-These charts help highlight financial patterns, rating behavior, and changes in the film industry over time.
-
+## Outputs
+- **`outputs/data/cleaned_movies.html`**: The fully processed dataset.
+- **`outputs/plots/`**:
+    - `revenue_vs_budget.png`
+    - `roi_by_genre.png`
+    - `popularity_vs_rating.png`
+    - `yearly_trends.png`
+    - `franchise_comparison.png`
